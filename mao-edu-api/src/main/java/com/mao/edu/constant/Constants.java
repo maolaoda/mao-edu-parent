@@ -11,4 +11,7 @@ public interface Constants
      * 所有课程分类
      */
     String COURSE_ALLCOURSECLASSLIST = "allCourseClassList";
+
+    String COURSE_ALLCOURSELIST = "allCourseList";
+    int DEFAULT_PAGE_SIZE = 2;
 }

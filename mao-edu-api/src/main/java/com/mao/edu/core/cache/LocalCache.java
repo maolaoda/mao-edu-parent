@@ -52,9 +52,9 @@ public class LocalCache {
         data1.add("2");
         data1.add("3");
         data1.add("4");
-        LocalCache.put("mayikt", data1);
+        LocalCache.put("mao", data1);
         List<String> data2 = new ArrayList<String>();
-        data2 = LocalCache.get("mayikt", data2);
+        data2 = LocalCache.get("mao", data2);
         System.out.println(data2);
     }
 }

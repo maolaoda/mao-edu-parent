@@ -19,7 +19,7 @@ public class Test01
                     .outputDir("D:\\data\\mybatis"); // 指定输出目录
             })
             .packageConfig(builder -> {
-                builder.parent("com.mayikt.edu") // 设置父包名
+                builder.parent("com.mao.edu") // 设置父包名
                     //                            .moduleName("system") // 设置父包模块名
                     .pathInfo(Collections.singletonMap(OutputFile.xml, "D:\\data\\mybatis")); // 设置mapperXml生成路径
             })
