@@ -14,4 +14,6 @@ public interface Constants
 
     String COURSE_ALLCOURSELIST = "allCourseList";
     int DEFAULT_PAGE_SIZE = 2;
+
+    int DB_INSERT_RESULT_BIGZERO =0;
 }
