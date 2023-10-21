@@ -4,9 +4,12 @@ import com.mao.edu.base.BaseApiController;
 import com.mao.edu.base.BaseResponse;
 import com.mao.edu.entity.EduUser;
 import com.mao.edu.entity.LoginReqDTO;
+import com.mao.edu.entity.UserLoginLog;
 import com.mao.edu.service.IEduUserService;
+import com.mao.edu.service.IUserLoginLogService;
 import com.mao.edu.utils.MD5Utils;
 import com.mao.edu.utils.RedisUtils;
+import com.mao.edu.utils.RquestUtils;
 import com.mao.edu.utils.TokenUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Date;
 import java.util.HashMap;
 
 /**
@@ -28,6 +32,8 @@ public class LoginController extends BaseApiController
     @Autowired
     private IEduUserService eduUserService;
 
+    @Autowired
+    private IUserLoginLogService iUserLoginLogService;
     /**
      * 用户登录
      *
@@ -45,20 +51,26 @@ public class LoginController extends BaseApiController
         EduUser dbEduUser = eduUserService.findByUserNameEduUser(userName);
         if (dbEduUser == null) {
             log.error("[未查找到用户信息]");
-            return setResultError("账户或者密码错误");
+            return setResultError("[账户或者密码错误]");
         }
         // 获取用户盐值
         String userSalt = dbEduUser.getUserSalt();
         String newPwd = MD5Utils.md5(loginReqDto.getPassword() + userSalt);
         // 比对数据库密码
         if (!newPwd.equals(dbEduUser.getPassword())) {
-            return setResultError("账户或者密码错误");
+            return setResultError("[账户或者密码错误]");
         } // 生产对应的用户token
         String userToken = TokenUtils.getToken();
         Integer userId = dbEduUser.getUserId();
         RedisUtils.setString(userToken, userId);
         HashMap<String, String> result = new HashMap<>();
         result.put("userToken", userToken);
+        log.info("[用户登录成功：userToken{}]", userToken);
+        // 记录登录日志
+        UserLoginLog userLoginLog = new UserLoginLog(userId,
+            RquestUtils.getIpAddr(), new Date(), userToken
+            , RquestUtils.getEquipment());
+        iUserLoginLogService.insertUserLogin(userLoginLog);
         return setResultSuccessData(result);
     }
 }
